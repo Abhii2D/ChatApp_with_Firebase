@@ -125,13 +125,13 @@
       const app = initializeApp(firebaseConfig);
 
       var database = getDatabase();
-      // var usename = prompt("Enter your name :");
+      var username = prompt("Enter your name :");
       // var usename = "abhijeet";
 
       showdata();
       document.getElementById("submit").addEventListener("click", function (e) {
         var message = document.getElementById("message").value;
-        var username = document.getElementById("icon_prefix").value; || "Stranger";
+       // var username = document.getElementById("icon_prefix").value; 
         const id = push(child(ref(database), "message")).key;
         set(ref(database, "message/" + id), {
           username: username,
