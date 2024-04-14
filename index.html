@@ -3,14 +3,92 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>ChatApp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var elems = document.querySelectorAll(".modal");
+        var instances = M.Modal.init(elems);
+        var username = document.getElementById("icon_prefix").value;
+        document.getElementById("usernamehhh").innerText = username;
+      });
+    </script>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="./index.html" class="brand-logo" style="margin-left: 30px"
+          >Logo</a
+        >
+
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li>
+            <button
+              data-target="modal1"
+              class="btn modal-trigger"
+              style="margin-right: 20px"
+            >
+              LogIn
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
     <div class="container">
       <h1>ChatApp</h1>
-      <input type="text" name="d" id="message" placeholder="enter text" />
-      <button type="button" id="submit">Send</button>
+      <p for="" id="usernamehhh"></p>
+      <div class="searchbox" style="display: flex; flex-direction: row">
+        <input
+          type="text"
+          name="d"
+          id="message"
+          style="width: 900px"
+          placeholder="Enter Message ......"
+        />
+
+        <button class="btn waves-effect waves-light" id="submit" name="action">
+          Send
+          <i class="material-icons right">send</i>
+        </button>
+      </div>
       <ul id="showmessages"></ul>
+    </div>
+    <div id="modal1" class="modal">
+      <div class="row">
+        <form class="col s12">
+          <div class="row">
+            <div class="input-field col s6">
+              <i class="material-icons prefix">account_circle</i>
+              <input id="icon_prefix" type="text" class="validate" />
+              <label for="icon_prefix">First Name</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">phone</i>
+              <input id="icon_telephone" type="tel" class="validate" />
+              <label for="icon_telephone">Telephone</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <a
+          href="#!"
+          class="modal-close waves-effect waves-green btn"
+          id="primarykey"
+          >LogIn</a
+        >
+      </div>
     </div>
 
     <script type="module">
@@ -20,6 +98,7 @@
       import {
         getDatabase,
         ref,
+        push,
         set,
         get,
         orderByChild,
@@ -44,16 +123,17 @@
       const app = initializeApp(firebaseConfig);
 
       var database = getDatabase();
-      //      var usename = prompt("Enter your name :");
-      var usename = "abhijeet";
+      // var usename = prompt("Enter your name :");
+      // var usename = "abhijeet";
 
       showdata();
       document.getElementById("submit").addEventListener("click", function (e) {
         var message = document.getElementById("message").value;
-
-        set(ref(database, "message/" + usename), {
-          username: usename,
-          message: [message],
+        var username = document.getElementById("icon_prefix").value;
+        const id = push(child(ref(database), "message")).key;
+        set(ref(database, "message/" + id), {
+          username: username,
+          message: message,
         });
         alert("message send");
         showdata();
@@ -75,11 +155,22 @@
         darray.map((e, i) => {
           html += "<li id='message'>";
           html += `${e.username} message is ${e.message}`;
+
           console.log(e.message);
           html += "</li>";
         });
         document.getElementById("showmessages").innerHTML = html;
       };
+
+      document
+        .getElementById("primarykey")
+        .addEventListener("click", function () {
+          var usernameprimary = document.getElementById("icon_prefix").value;
+          document.getElementById("usernamehhh").innerHTML = usernameprimary;
+        });
+
+      var messageBody = document.querySelector("#showmessages");
+      messageBody.scrollIntoView();
     </script>
   </body>
 </html>
