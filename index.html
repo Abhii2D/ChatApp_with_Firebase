@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>ChatApp</h1>
+      <input type="text" name="d" id="message" placeholder="enter text" />
+      <button type="button" id="submit">Send</button>
+      <ul id="showmessages"></ul>
+    </div>
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      import {
+        getDatabase,
+        ref,
+        set,
+        get,
+        orderByChild,
+        remove,
+        child,
+      } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCqulIGx2EEGRHVplZROBw-AQiQrXM2HAI",
+        authDomain: "chatbotapp-29c19.firebaseapp.com",
+        databaseURL: "https://chatbotapp-29c19-default-rtdb.firebaseio.com",
+        projectId: "chatbotapp-29c19",
+        storageBucket: "chatbotapp-29c19.appspot.com",
+        messagingSenderId: "211185937289",
+        appId: "1:211185937289:web:4844b8b5e9a215872acf58",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+
+      var database = getDatabase();
+      //      var usename = prompt("Enter your name :");
+      var usename = "abhijeet";
+
+      showdata();
+      document.getElementById("submit").addEventListener("click", function (e) {
+        var message = document.getElementById("message").value;
+
+        set(ref(database, "message/" + usename), {
+          username: usename,
+          message: [message],
+        });
+        alert("message send");
+        showdata();
+      });
+
+      function showdata() {
+        const dbref = ref(database);
+        get(child(dbref, "message/")).then((snapshot) => {
+          let darray = [];
+          snapshot.forEach((childSnapshot) => {
+            darray.push(childSnapshot.val());
+          });
+          gooo(darray);
+        });
+      }
+
+      const gooo = (darray) => {
+        var html = "";
+        darray.map((e, i) => {
+          html += "<li id='message'>";
+          html += `${e.username} message is ${e.message}`;
+          console.log(e.message);
+          html += "</li>";
+        });
+        document.getElementById("showmessages").innerHTML = html;
+      };
+    </script>
+  </body>
+</html>
