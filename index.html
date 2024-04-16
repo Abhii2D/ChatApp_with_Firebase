@@ -61,9 +61,15 @@
           Send
           <i class="material-icons right">send</i>
         </button>
-
-
-    </div>
+        <button
+          class="btn waves-effect waves-light"
+          id="deleteChat"
+          name="action"
+        >
+          deleteChat
+          <i class="material-icons right">delete</i>
+        </button>
+      </div>
       <ul id="showmessages"></ul>
     </div>
     <div id="modal1" class="modal">
@@ -125,19 +131,21 @@
       const app = initializeApp(firebaseConfig);
 
       var database = getDatabase();
-      var username = prompt("Enter your name :");
+      let usename = prompt("Enter your name :");
       // var usename = "abhijeet";
-
+      var username1 = usename;
       showdata();
       document.getElementById("submit").addEventListener("click", function (e) {
+        e.preventDefault();
         var message = document.getElementById("message").value;
-       // var username = document.getElementById("icon_prefix").value; 
+
         const id = push(child(ref(database), "message")).key;
         set(ref(database, "message/" + id), {
-          username: username,
+          username: username1,
           message: message,
         });
         alert("message send");
+
         showdata();
       });
 
@@ -148,20 +156,19 @@
           snapshot.forEach((childSnapshot) => {
             darray.push(childSnapshot.val());
           });
+
           gooo(darray);
         });
       }
 
       const gooo = (darray) => {
         var html = "";
-        darray.map((e, i) => {
-          html += "<li id='message'>";
-          html += `${e.username} message is ${e.message}`;
 
-          console.log(e.message);
-          html += "</li>";
+        darray.map((e, i) => {
+          html += `<li id='message'  > ${e.username} : ${e.message} </li>`;
+          document.getElementById("showmessages").innerHTML = html;
+          document.getElementById("message").innerHTML = "";
         });
-        document.getElementById("showmessages").innerHTML = html;
       };
 
       document
@@ -174,9 +181,13 @@
       var messageBody = document.querySelector("#showmessages");
       messageBody.scrollIntoView();
 
-//removedata
-
-
-  </script>
+      document
+        .getElementById("deleteChat")
+        .addEventListener("click", function () {
+          remove(ref(database, "message/"));
+          alert("data deleted");
+        });
+      setInterval(showdata, 2000);
+    </script>
   </body>
 </html>
